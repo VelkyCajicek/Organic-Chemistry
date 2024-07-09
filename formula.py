@@ -18,7 +18,9 @@ def inputFormat(inputString : str):
             iterationSkip = i + 1
         else:
             returnList.append(compoundFirstSplit[i])
- 
+
+    # Down here is where the rework needs to happen
+
     for i in range(0, len(returnList)): # This checks for the num of bonds
         for preffix in preffixList: # Removes preffix
             if(preffix in returnList[i]):
@@ -78,7 +80,6 @@ def mainFormula(inputString : str):
 
     hydrocarbonResidues = [0] * backboneLength
     bondPositions = bondFormat(bondList, backboneLength)
-
     compound.pop(0) # Removes the part of the compound that determines the backbone length
     for element in compound:
         extractValues(element, hydrocarbonResidues)
@@ -86,9 +87,9 @@ def mainFormula(inputString : str):
     return hydrocarbonResidues, bondPositions
 
 if __name__ == "__main__":
-    testString = "2,3,3,7-tetrameth-2-yl-okt-1,2-en"
-    testString = "4-propyl-deka-2,4-dien" 
-    #testString = "4-ethyl-3,5-dimethyl-oktan"
-    #print(inputFormat(testString))
+    #testString = "3-methyl-hex-3-en-1-yn" # Two types of bonds
+    #testString = "3-methyl-hexan" # Removes the preffix
+    testString = "1-ethyl-2,3-dimethyl-cyklopentan"
+    print(inputFormat(testString))
     #print(findMultipleBonds(inputFormat(testString)))
-    print(mainFormula(testString))
+    #print(mainFormula(testString))
