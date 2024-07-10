@@ -3,10 +3,11 @@ import re
 unbranchedAlkanes = ["methan", "ethan", "propan", "butan", "pentan", "hexan", "heptan", "oktan", "nonan", "dekan"]
 preffixList = ["di", "tri", "tetra", "penta", "hexa"]
 suffixList = ["an", "en", "yn"]
-regexList = [r"\d-en", r"\d-yn"] # I dont like this solution so it would be good to change it
 
 def inputFormat(inputString : str):
     bondPositions = []
+    pattern = re.compile(r"\d-[A-Za-z]n")
+
     compoundFirstSplit = inputString.split("-")
     returnList = []
     iterationSkip = 100 # This is so that i can skip over an iteration if the list element has been changed
@@ -19,39 +20,55 @@ def inputFormat(inputString : str):
         else:
             returnList.append(compoundFirstSplit[i])
 
-    # Down here is where the rework needs to happen
-
-    for i in range(0, len(returnList)): # This checks for the num of bonds
+    # Removes preffixes
+    for i in range(0, len(returnList)):
         for preffix in preffixList: # Removes preffix
             if(preffix in returnList[i]):
-                returnList[i] = returnList[i].replace(preffix, "")
-                if(i == len(returnList) - 1): # If there is a preffix then remove the last char from previous element
-                    returnList[i-1] = returnList[i-1][:-1] 
+                if(preffix != returnList[i]): # Because of "hexa" being in preffix and carbon list
+                    returnList[i] = str(returnList[i]).replace(preffix, "")
 
-        for index in range(0, len(regexList)):
-            patternCheck = re.compile(regexList[index])
-            if(bool(patternCheck.search(returnList[i])) == True):
-                bondPositions = re.findall(r'[0-9]+', returnList[i]) # Finds nums
-                if(index == 0):
-                    bondPositions.insert(0, 2)
-                else:
-                    bondPositions.insert(0, 3)
-                returnList[i] = re.sub(r'[^a-zA-Z]', '', returnList[i])
-                # Adds an to the end of the string
-                for part in returnList:
-                    for suffix in suffixList:
-                        if(suffix == part):
-                            part = suffixList[0]
-                            returnList[i-1] += part 
-    
-    returnList = list(filter(lambda a: len(a) != 2, returnList)) # Removes all strings that have the len 2, assuming only the suffix stays
-    return returnList, bondPositions
+    # Finalizes list and creates bond list
+    for i in range(0, len(returnList)):
+        try: # I dont like 2 try catch statements but they seem to do the trick (First one because if there are 2 types of bonds the list gets shortened too much)
+            if(bool(pattern.search(returnList[i])) == True): # Checks if there is an occurence of a multiple bond
+                positions = list(re.findall(r'[0-9]+', returnList[i]))
+                returnList[i] = re.sub(r'[^a-zA-Z]', '', returnList[i]) 
+                if(returnList[i] == "en"):
+                    bondPositions.extend(positions)
+                    bondPositions.append(2)
+                if(returnList[i] == "yn"):
+                    bondPositions.extend(positions)
+                    bondPositions.append(3)
+                try:
+                    if(bool(pattern.search(returnList[i + 1])) == True): # Checks if there are multiple occurences of multiple bonds
+                        positions = list(re.findall(r'[0-9]+', returnList[i + 1])) # Finds nums
+                        returnList[i+1] = re.sub(r'[^a-zA-Z]', '', returnList[i + 1]) # Removes all special chars and nums
+                        if(returnList[i+1] == "en"):
+                            bondPositions.extend(positions)
+                            bondPositions.append(2)
+                        if(returnList[i+1] == "yn"):
+                            bondPositions.extend(positions)
+                            bondPositions.append(3)
+                except(IndexError): #
+                    pass
+
+                returnList = list(filter(lambda a: len(a) != 2, returnList)) # Removes all strings that have the len 2, assuming only the suffix stays
+
+                for alkane in unbranchedAlkanes:
+                    if(f"{returnList[-1]}n" == alkane):
+                        returnList[-1] += "n"
+                        break
+                    if(f"{returnList[-1]}an" == alkane):
+                        returnList[-1] += "an"
+                        break
+        except(IndexError):
+            break
+
+    return returnList[::-1], bondPositions[::-1] # Reversed list so it starts with a int + append() > insert()
 
 def extractValues(listElement : str, residuesList : list) -> None: # Void that changes the list
     positions = re.findall(r'[0-9]+', listElement) # Finds nums
     listElement = re.sub(r'[^a-zA-Z]', '', listElement) # Removes all special chars and nums
-    for preffix in preffixList:
-        listElement = listElement.replace(preffix, "")
     for i in range(0, len(unbranchedAlkanes)): # Goes through pre-defined list
         if(unbranchedAlkanes[i].replace("an", "yl") == listElement): # Checks if listElement is in this predefined list
             for index in positions: 
@@ -64,15 +81,19 @@ def extractValues(listElement : str, residuesList : list) -> None: # Void that c
                     residuesList[int(index) - 1] = i + 1 # Regex returns nums as strings
 
 def bondFormat(bondList : list, backboneLength : int) -> list:
-    bondsPositions = [0] * backboneLength
-    for i in range(1, len(bondList)):
-        bondsPositions[int(bondList[i]) - 1] = int(bondList[0])
+    currentBondType = 1
+    bondsPositions = [1] * backboneLength
+    for i in range(0, len(bondList)):
+        if(type(bondList[i]) is int):
+            currentBondType = bondList[i]
+        else:
+            bondsPositions[int(bondList[i]) - 1] = currentBondType
     return bondsPositions
 
 def mainFormula(inputString : str):
     backboneLength = 0
     compound, bondList = inputFormat(inputString)
-    compound = compound[::-1] # Reverse the list because its done the opposite way
+
     for i in range(0, len(unbranchedAlkanes)): # First find the number of carbon on the backbone
         if(compound[0] == unbranchedAlkanes[i]):
             backboneLength = i + 1
@@ -87,9 +108,8 @@ def mainFormula(inputString : str):
     return hydrocarbonResidues, bondPositions
 
 if __name__ == "__main__":
-    #testString = "3-methyl-hex-3-en-1-yn" # Two types of bonds
-    #testString = "3-methyl-hexan" # Removes the preffix
-    testString = "1-ethyl-2,3-dimethyl-cyklopentan"
+    testString = "5-ethyl-3,4,4-trimethyl-okt-1-en-6-yn"
+    #testString = "4,5-dipropyl-nona-2,6-diyn"
     print(inputFormat(testString))
     #print(findMultipleBonds(inputFormat(testString)))
-    #print(mainFormula(testString))
+    print(mainFormula(testString))

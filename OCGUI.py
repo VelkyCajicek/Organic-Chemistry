@@ -35,8 +35,7 @@ class GUI:
             self.confirmButton.config(text=compound)
             try:
                 compoundData, bondPositions = mainFormula(compound.strip().lower())
-                self.DrawAlkanesSimple(t, len(compoundData), compoundData, bondPositions)
-                time.sleep(1)
+                self.DrawHydrocarbonSimple(t, len(compoundData), compoundData, bondPositions)
             except(IndexError):
                 print(compound)
 
@@ -46,9 +45,11 @@ class GUI:
         t.reset() # Resets the canvas
         if(self.userInputBox.get() == "run"):
             self.RunTestCases(t)
+        elif(self.userInputBox.get() == "test"):
+            self.DrawCyclicalHydrocarbon(t, 3)
         else:
             compoundData, bondPositions = mainFormula(self.userInputBox.get().strip().lower()) # White spaces are very bad
-            self.DrawAlkanesSimple(t, len(compoundData), compoundData, bondPositions)
+            self.DrawHydrocarbonSimple(t, len(compoundData), compoundData, bondPositions)
 
     def DrawHydrocarbonResidue(self, currentAngle : float, t : turtle.RawTurtle, compoundDataElement : int):
         currentPosX = t.xcor()
@@ -57,7 +58,7 @@ class GUI:
         t.forward(30)
         t.left(30)
         for _ in range(0, compoundDataElement - 1):
-            if(t.heading() == 120.0 + currentAngle): # This doesnt yet work so currentAngle will be set to 0
+            if(t.heading() == 120.0 + currentAngle): 
                 t.forward(30)
                 t.right(60) 
             else:
@@ -75,13 +76,13 @@ class GUI:
             else:
                 self.DrawHydrocarbonResidue(0, t, compoundData[i])
             t.setheading(rotation)
-        if(bondPositions[i] != 0):
+        if(bondPositions[i] != 1):
             if(bondPositions[i] == 2):
                 t.pencolor("red")
             if(bondPositions[i] == 3):
-                t.pencolor("green")
+                t.pencolor("blue")
 
-    def DrawAlkanesSimple(self, t : turtle.RawTurtle, mainCarbonCount : int, compoundData : list, bondPositions : list) -> None:
+    def DrawHydrocarbonSimple(self, t : turtle.RawTurtle, mainCarbonCount : int, compoundData : list, bondPositions : list) -> None:
         t.left(30)
         for i in range(0, mainCarbonCount - 1): # -1 since each end point is a carbon
             if(t.heading() == 30.0):
@@ -94,6 +95,12 @@ class GUI:
                 t.forward(30)
                 t.left(60)
                 t.pencolor("black")
+        time.sleep(0.5)
+
+    def DrawCyclicalHydrocarbon(self, t : turtle.RawTurtle, mainCarbonCount : int):
+        for _ in range(0, mainCarbonCount):
+            t.forward(30)
+            t.left(360 / mainCarbonCount)
 
 if __name__ == "__main__":
     myGUI = GUI()
