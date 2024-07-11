@@ -108,7 +108,7 @@ def mainFormula(inputString : str):
     return hydrocarbonResidues, bondPositions
 
 if __name__ == "__main__":
-    testString = "5-ethyl-3,4,4-trimethyl-okt-1-en-6-yn"
+    testString = "3,4-diethyl-4-methyl-5,5-dipropyl-nona-1,6-dien"
     #testString = "4,5-dipropyl-nona-2,6-diyn"
     print(inputFormat(testString))
     #print(findMultipleBonds(inputFormat(testString)))
