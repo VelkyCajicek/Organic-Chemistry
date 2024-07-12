@@ -21,3 +21,13 @@ HydrocarbonDerivativeList = [
     HydrocarbonDerivative("Karboxylová kyselina", "COOH", "-----", "ová kyselina"),
     HydrocarbonDerivative("Ester", "COOR", "-----", "oát") 
 ]
+
+class AromaticCompound:
+    def __init__(self, name : str, formula : str) -> None:
+        self.name = name
+        self.formula = formula
+
+AromaticCompounds = [
+    AromaticCompound("benzen", "cyklohexa-1,3,5-trien"),
+    AromaticCompound("toluen", "1-methyl-cyklohexa-1,3,5-trien")
+]

@@ -109,7 +109,5 @@ def mainFormula(inputString : str):
 
 if __name__ == "__main__":
     testString = "3,4-diethyl-4-methyl-5,5-dipropyl-nona-1,6-dien"
-    #testString = "4,5-dipropyl-nona-2,6-diyn"
-    print(inputFormat(testString))
-    #print(findMultipleBonds(inputFormat(testString)))
-    print(mainFormula(testString))
+    compoundData, bondPositions = mainFormula(testString)
+    print(f"compoundData = {compoundData}\nbondPositions = {bondPositions}")

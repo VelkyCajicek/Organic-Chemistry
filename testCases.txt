@@ -19,3 +19,18 @@
 3-methyl-hepta-1,4-diyn
 5-ethyl-3,4,4-trimethyl-okt-1-en-6-yn
 5-ethyl-2,8-dimethyl-non-3-yn
+# Cyklicke uhlovodiky
+cyklopropan
+4-ethyl-1-methyl-1-propyl-cyklohexan
+1,2,3,4-tetramethyl-cyklobutan
+1-ethyl-2,2-dimethyl-cyklooktan
+propyl-cyklopropan 
+1,1-diethyl-cykloheptan
+cyklobutyn
+1-methyl-4-pentyl-cyklohex-1-en
+3-ethyl-1-methyl-2-hexyl-cyklopent-1-en
+1,2,5-trimethyl-cyklookt-3-yn
+1-methyl-2-propyl-cykloprop-1-en
+1,1-diethyl-cyklohept-3-yn
+# Areny
+1,4-diethyl-2-methyl-benzen
