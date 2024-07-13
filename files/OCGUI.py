@@ -3,6 +3,7 @@ import turtle
 import time
 
 from formula import mainFormula
+from HydrocarbonDerivatives import *
 
 # For complex compounds the distance is the same as simple for the bonds !!!
 
@@ -36,10 +37,12 @@ class GUI:
             self.switchButton.config(text="Simple")
 
     def RunTestCases(self, t : turtle.RawTurtle) -> None:
-        with open("testCases.txt", "r") as data:
+        with open("files/testCases.txt", "r") as data:
             lines = [line.strip() for line in data]
 
         lines = list(filter(lambda a: a[0] != "#", lines)) # Removes titles (index for cyclical is 18)
+
+        # lines = lines[18:]
 
         for compound in lines: 
             t.reset()
@@ -65,11 +68,21 @@ class GUI:
         if(self.userInputBox.get() == "run"):
             self.RunTestCases(t)
         else:
-            if("cyklo" in self.userInputBox.get()):
-                compoundData, bondPositions = mainFormula(self.userInputBox.get().strip().lower().replace("cyklo", "")) 
+            # Check for special type of ligand in compound
+            userInput = self.userInputBox.get()
+            for compound in AromaticCompounds:
+                if(compound.name in userInput):
+                    if(compound.name == userInput):
+                        userInput = userInput.replace(compound.name, compound.formula)
+                    else:
+                        userInput = userInput.replace(compound.name, f"-{compound.formula}")
+
+            # Draw the compound
+            if("cyklo" in userInput):
+                compoundData, bondPositions = mainFormula(userInput.strip().lower().replace("cyklo", "")) 
                 self.DrawCyclicalHydrogen(t, len(compoundData), compoundData, bondPositions)
             else:
-                compoundData, bondPositions = mainFormula(self.userInputBox.get().strip().lower()) 
+                compoundData, bondPositions = mainFormula(userInput.strip().lower()) 
                 if(self.switchButton.cget("text") == "Simple"):
                     self.DrawHydrocarbonSimple(t, len(compoundData), compoundData, bondPositions)
                 else:
@@ -221,15 +234,20 @@ class GUI:
     def DrawHydrocarbonResidueCyclical(self, currentAngle : float, t : turtle.RawTurtle, compoundDataElement : int): # This needs reworking
         currentPosX = t.xcor()
         currentPosY = t.ycor()
-        t.right(currentAngle)
-        rotation = t.heading()
-        for _ in range(0, compoundDataElement):
-            if(t.heading() == rotation): 
+
+        t.setheading(t.heading() - currentAngle) # Very important
+
+        t.forward(30)
+        t.left(30)
+        currentHeading = t.heading()
+        for _ in range(0, compoundDataElement - 1):
+            if(t.heading() == currentHeading):
                 t.forward(30)
                 t.right(60) 
             else:
                 t.forward(30)
                 t.left(60)
+
         t.penup()
         t.goto(currentPosX, currentPosY) # Resets position
         t.pendown()
@@ -237,11 +255,12 @@ class GUI:
     def DrawCyclicalHydrogenAdditionalInfo(self, compoundData : list, i : int, t : turtle.RawTurtle):
         currentHeading = t.heading()
         if(compoundData[i] != 0): # These parts just mean that it draws so residue part and then continues drawing the backbone
-            if(type(compoundData[i]) is list):
-                self.DrawHydrocarbonResidueCyclical(180 / len(compoundData), t, compoundData[i][0])
-                self.DrawHydrocarbonResidueCyclical(360 / len(compoundData), t, compoundData[i][1])
+            if(type(compoundData[i]) is list): # Incorrect
+                calculation = (360  - (360 / len(compoundData))) / 2
+                self.DrawHydrocarbonResidueCyclical(calculation + calculation / 3, t, compoundData[i][0])
+                self.DrawHydrocarbonResidueCyclical(calculation / 3, t, compoundData[i][1])
             else:
-                self.DrawHydrocarbonResidueCyclical(t.heading() - 360 / len(compoundData), t, compoundData[i])
+                self.DrawHydrocarbonResidueCyclical((360  - (360 / len(compoundData))) / 2, t, compoundData[i])
         t.setheading(currentHeading)
 
 if __name__ == "__main__":
