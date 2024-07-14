@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter.colorchooser import askcolor
 
 class DraggableShapes:
-    def __init__(self, canvas):
+    def __init__(self, canvas : tk.Canvas):
         self.canvas = canvas
         self.shapes = {}
         self.selected_shape = None
+        self.lastSelectedShape = None
         self.dragging = False
         self.start_x = 0
         self.start_y = 0
@@ -15,6 +15,7 @@ class DraggableShapes:
         self.canvas.bind("<Button-1>", self.select_shape)
         self.canvas.bind("<B1-Motion>", self.drag_shape)
         self.canvas.bind("<ButtonRelease-1>", self.stop_drag)
+        self.canvas.bind("<Button-2>", self.removeShape())
 
     def create_menu(self):
         self.menu_frame = tk.Frame(self.canvas, bg='white')
@@ -26,20 +27,18 @@ class DraggableShapes:
         oval_button = tk.Button(self.menu_frame, text="Add Oval", command=self.add_oval)
         oval_button.pack(side=tk.TOP, padx=5, pady=5)
 
-        color_button = tk.Button(self.menu_frame, text="Change Outline Color", command=self.change_outline_color)
-        color_button.pack(side=tk.TOP, padx=5, pady=5)
-
-        width_button = tk.Button(self.menu_frame, text="Change Outline Width", command=self.change_outline_width)
-        width_button.pack(side=tk.TOP, padx=5, pady=5)
-
     def add_rectangle(self):
-        rect = self.canvas.create_rectangle(50, 50, 150, 150, fill="red", outline="black", width=2)
+        rect = self.canvas.create_rectangle(50, 50, 150, 150, fill="red", outline="blue")
         self.shapes[rect] = {'type': 'rectangle', 'start': (50, 50), 'end': (150, 150)}
 
     def add_oval(self):
-        oval = self.canvas.create_oval(200, 50, 300, 150, fill="blue", outline="black", width=2)
+        oval = self.canvas.create_oval(200, 50, 300, 150, fill="blue")
         self.shapes[oval] = {'type': 'oval', 'start': (200, 50), 'end': (300, 150)}
 
+    def removeShape(self):
+        print(self.selected_shape)
+        self.canvas.delete(self.lastSelectedShape)
+        
     def select_shape(self, event):
         x, y = event.x, event.y
         shape = self.canvas.find_closest(x, y)
@@ -47,6 +46,11 @@ class DraggableShapes:
             shape_id = shape[0]
             if shape_id in self.shapes:
                 self.selected_shape = shape_id
+                if(self.lastSelectedShape != shape_id and self.lastSelectedShape != None): # Deselects the previous object
+                    self.canvas.itemconfig(self.lastSelectedShape, outline="purple")
+                self.canvas.itemconfig(shape_id, outline="green") # Changes shape outline to show which is selected
+                self.lastSelectedShape = shape_id
+
                 self.start_x = x
                 self.start_y = y
                 self.dragging = True
@@ -71,18 +75,6 @@ class DraggableShapes:
     def stop_drag(self, event):
         self.dragging = False
         self.selected_shape = None
-
-    def change_outline_color(self):
-        if self.selected_shape:
-            color = askcolor()[1]  # This opens a color chooser and returns the selected color
-            if color:
-                self.canvas.itemconfig(self.selected_shape, outline=color)
-
-    def change_outline_width(self):
-        if self.selected_shape:
-            new_width = tk.simpledialog.askinteger("Input", "Enter new outline width:", minvalue=1, maxvalue=10)
-            if new_width is not None:
-                self.canvas.itemconfig(self.selected_shape, width=new_width)
 
 def main():
     root = tk.Tk()

@@ -2,8 +2,9 @@ import tkinter as tk
 import turtle
 import time
 
-from formula import mainFormula
+from Formula import mainFormula
 from HydrocarbonDerivatives import *
+from CanvasShapes import DraggableShapes
 
 # For complex compounds the distance is the same as simple for the bonds !!!
 
@@ -29,6 +30,7 @@ class GUI:
         self.canvas = tk.Canvas(self.root, height=400, width=800)
         self.canvas.pack()
         self.t = turtle.RawTurtle(self.canvas)
+        self.canvasInteraction = DraggableShapes(self.canvas)
 
     def updateSwitch(self) -> None: 
         if(self.switchButton.cget("text") == "Simple"): # This has proved to work
@@ -36,18 +38,50 @@ class GUI:
         else:
             self.switchButton.config(text="Simple")
 
+    def formatUserInput(self, userInput : str) -> str:
+        # Check for special type of ligand in compound
+        for compound in AromaticCompounds:
+            if(compound.name in userInput):
+                if(compound.name == userInput):
+                    userInput = userInput.replace(compound.name, compound.formula)
+                else:
+                    userInput = userInput.replace(compound.name, f"{compound.formula}")
+                    # Add check for two "--"
+        return userInput
+
+    def main(self, t : turtle.RawTurtle) -> None:
+        t.reset() # Resets the canvas
+
+        if(self.userInputBox.get() == "run"):
+            self.RunTestCases(t)
+        else:
+            # Check for special type of ligand in compound
+            userInput = self.formatUserInput(self.userInputBox.get())
+            print(userInput)
+            # Draw the compound
+            if("cyklo" in userInput):
+                compoundData, bondPositions = mainFormula(userInput.strip().lower().replace("cyklo", "")) 
+                self.DrawCyclicalHydrogen(t, len(compoundData), compoundData, bondPositions)
+            else:
+                compoundData, bondPositions = mainFormula(userInput.strip().lower()) 
+                if(self.switchButton.cget("text") == "Simple"):
+                    self.DrawHydrocarbonSimple(t, len(compoundData), compoundData, bondPositions)
+                else:
+                    self.DrawHydroCarbonComplex(t, len(compoundData), compoundData, bondPositions)
+
     def RunTestCases(self, t : turtle.RawTurtle) -> None:
         with open("files/testCases.txt", "r") as data:
             lines = [line.strip() for line in data]
 
         lines = list(filter(lambda a: a[0] != "#", lines)) # Removes titles (index for cyclical is 18)
 
-        # lines = lines[18:]
+        #lines = lines[25:]
 
         for compound in lines: 
             t.reset()
             self.confirmButton.config(text=compound)
             try:
+                compound = self.formatUserInput(compound)
                 if("cyklo" in compound):
                     compoundData, bondPositions = mainFormula(compound.strip().lower().replace("cyklo", "")) 
                     self.DrawCyclicalHydrogen(t, len(compoundData), compoundData, bondPositions)
@@ -62,31 +96,6 @@ class GUI:
 
         self.confirmButton.config(text="Confirm")
 
-    def main(self, t : turtle.RawTurtle) -> None:
-        t.reset() # Resets the canvas
-
-        if(self.userInputBox.get() == "run"):
-            self.RunTestCases(t)
-        else:
-            # Check for special type of ligand in compound
-            userInput = self.userInputBox.get()
-            for compound in AromaticCompounds:
-                if(compound.name in userInput):
-                    if(compound.name == userInput):
-                        userInput = userInput.replace(compound.name, compound.formula)
-                    else:
-                        userInput = userInput.replace(compound.name, f"-{compound.formula}")
-
-            # Draw the compound
-            if("cyklo" in userInput):
-                compoundData, bondPositions = mainFormula(userInput.strip().lower().replace("cyklo", "")) 
-                self.DrawCyclicalHydrogen(t, len(compoundData), compoundData, bondPositions)
-            else:
-                compoundData, bondPositions = mainFormula(userInput.strip().lower()) 
-                if(self.switchButton.cget("text") == "Simple"):
-                    self.DrawHydrocarbonSimple(t, len(compoundData), compoundData, bondPositions)
-                else:
-                    self.DrawHydroCarbonComplex(t, len(compoundData), compoundData, bondPositions)
 
     def DrawBonds(self, t : turtle.RawTurtle, numBonds : int) -> None:
         currentPosX = t.xcor()
