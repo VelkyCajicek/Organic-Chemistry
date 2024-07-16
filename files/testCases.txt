@@ -34,3 +34,9 @@ cyklobutyn
 1,1-diethyl-cyklohept-3-yn
 # Areny
 1,4-diethyl-2-methyl-benzen
+1-ethyl-2-methylbenzen 
+1,2,3-tripropylbenzen
+1,2,4-trimethylbenzen
+p-dibutylbenzen
+1,4,7-trimethyl-naftalen
+7,10-diethyl-1,2,5-trimethyl-6-propyl-anthracen 

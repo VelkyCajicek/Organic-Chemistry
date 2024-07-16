@@ -1,6 +1,7 @@
 import tkinter as tk 
 import turtle
 import time
+import re
 
 from Formula import mainFormula
 from HydrocarbonDerivatives import *
@@ -45,19 +46,27 @@ class GUI:
                 if(compound.name == userInput):
                     userInput = userInput.replace(compound.name, compound.formula)
                 else:
-                    userInput = userInput.replace(compound.name, f"{compound.formula}")
-                    # Add check for two "--"
-        return userInput
+                    userInput = userInput.replace(compound.name, f"-{compound.formula}")
+
+        return userInput.replace("--", "-")
 
     def main(self, t : turtle.RawTurtle) -> None:
         t.reset() # Resets the canvas
 
         if(self.userInputBox.get() == "run"):
             self.RunTestCases(t)
+        elif(self.userInputBox.get() == "test"):
+            self.DrawAntracen(t)
         else:
             # Check for special type of ligand in compound
             userInput = self.formatUserInput(self.userInputBox.get())
+
+            digitCheck = re.compile(r"\d") # This is mostly for cyclical formulas since if there is no num at the beggining it assigns the residue to the first one
+            if(not digitCheck.match(userInput[0])):
+                userInput = "1-" + userInput
+            
             print(userInput)
+
             # Draw the compound
             if("cyklo" in userInput):
                 compoundData, bondPositions = mainFormula(userInput.strip().lower().replace("cyklo", "")) 
@@ -69,13 +78,38 @@ class GUI:
                 else:
                     self.DrawHydroCarbonComplex(t, len(compoundData), compoundData, bondPositions)
 
+    # Testing
+    def DrawAntracen(self, t : turtle.RawTurtle):
+        t.setheading(30)
+        self.DrawBenzen(t, 5, [2,1])
+        t.setheading(210)
+        self.DrawBenzen(t, 6, [1,2])
+
+    def DrawTheOtherOne(self, t : turtle.RawTurtle): # Doesnt work
+        t.setheading(90)
+        self.DrawBenzen(t, 6, [2,1])
+        t.setheading(210)
+        self.DrawBenzen(t, 5, [1,2])
+        t.setheading(210)
+        self.DrawBenzen(t, 6, [2,1])
+
+    def DrawBenzen(self, t : turtle.RawTurtle, benzenSize : int, bondIndex : list):
+        for i in range(0, benzenSize):
+            if(i % 2 == 0):
+                self.DrawBonds(t, bondIndex[0])
+            else:
+                self.DrawBonds(t, bondIndex[1])
+            t.right(60)
+
+    # Testing
+
     def RunTestCases(self, t : turtle.RawTurtle) -> None:
         with open("files/testCases.txt", "r") as data:
             lines = [line.strip() for line in data]
 
         lines = list(filter(lambda a: a[0] != "#", lines)) # Removes titles (index for cyclical is 18)
 
-        #lines = lines[25:]
+        #lines = lines[18:]
 
         for compound in lines: 
             t.reset()
@@ -263,13 +297,13 @@ class GUI:
 
     def DrawCyclicalHydrogenAdditionalInfo(self, compoundData : list, i : int, t : turtle.RawTurtle):
         currentHeading = t.heading()
+        calculation = (360  - (360 / len(compoundData))) # Im retarded, I hate myself, it was this all along
         if(compoundData[i] != 0): # These parts just mean that it draws so residue part and then continues drawing the backbone
-            if(type(compoundData[i]) is list): # Incorrect
-                calculation = (360  - (360 / len(compoundData))) / 2
+            if(type(compoundData[i]) is list): 
                 self.DrawHydrocarbonResidueCyclical(calculation + calculation / 3, t, compoundData[i][0])
                 self.DrawHydrocarbonResidueCyclical(calculation / 3, t, compoundData[i][1])
             else:
-                self.DrawHydrocarbonResidueCyclical((360  - (360 / len(compoundData))) / 2, t, compoundData[i])
+                self.DrawHydrocarbonResidueCyclical(calculation / 2, t, compoundData[i])
         t.setheading(currentHeading)
 
 if __name__ == "__main__":

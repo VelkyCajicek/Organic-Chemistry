@@ -28,11 +28,11 @@ class DraggableShapes:
         oval_button.pack(side=tk.TOP, padx=5, pady=5)
 
     def add_rectangle(self):
-        rect = self.canvas.create_rectangle(50, 50, 150, 150, fill="red", outline="blue")
+        rect = self.canvas.create_rectangle(50, 50, 150, 150, fill="red", outline="blue", width=1)
         self.shapes[rect] = {'type': 'rectangle', 'start': (50, 50), 'end': (150, 150)}
 
     def add_oval(self):
-        oval = self.canvas.create_oval(200, 50, 300, 150, fill="blue")
+        oval = self.canvas.create_oval(200, 50, 300, 150, fill="blue", outline="red", width=1)
         self.shapes[oval] = {'type': 'oval', 'start': (200, 50), 'end': (300, 150)}
 
     def removeShape(self):
