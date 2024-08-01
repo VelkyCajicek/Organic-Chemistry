@@ -20,6 +20,12 @@
 5-ethyl-3,4,4-trimethyl-okt-1-en-6-yn
 5-ethyl-2,8-dimethyl-non-3-yn
 # Cyklicke uhlovodiky
+cyklobuten
+1-ethyl-2-propyl-cyklopent-1-en
+4-ethyl-5-methyl-cyklohexa-1,3-dien
+3-methyl-cyklobut-1-yn
+cyklobutyn
+3-ethylcyklobut-1-yn
 cyklopropan
 4-ethyl-1-methyl-1-propyl-cyklohexan
 1,2,3,4-tetramethyl-cyklobutan
@@ -40,3 +46,14 @@ cyklobutyn
 p-dibutylbenzen
 1,4,7-trimethyl-naftalen
 7,10-diethyl-1,2,5-trimethyl-6-propyl-anthracen 
+# Halogenderiváty, nitrosoderiváty a nitroderiváty
+1-chlor-butan
+tetrabrom-methan
+3-brom-5-ethyl-2,2,4-trimethyl-hept-3-en
+2,4,6-trinitrotoluen
+1-brom-1-chlor-3-nitrosocyklohexan
+2,3-dibromnaftalen
+4-chlor-hepta-1,2-dien 
+brom-cyklobutan
+1,3,5-trinitrosonaftalen
+dinitro-methan  
