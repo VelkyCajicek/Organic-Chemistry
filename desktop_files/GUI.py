@@ -9,6 +9,7 @@ from canvasShapes import DraggableShapes
 from drawing_scripts.simple_hydrocarbon import SimpleHydrocarbon
 from drawing_scripts.cyclical_hydrocarbon import CyclicalHydrocarbon
 from drawing_scripts.complex_hydrocarbon import ComplexHydrocarbon
+from drawing_scripts.aromatic_hydrocarbon import AromaticHydrocarbon
 
 # For complex compounds the distance is the same as simple for the bonds !!!
 
@@ -42,6 +43,7 @@ class GUI:
         self.s = SimpleHydrocarbon()
         self.cy = CyclicalHydrocarbon()
         self.co = ComplexHydrocarbon()
+        self.a = AromaticHydrocarbon()
     
     def updateSwitch(self) -> None: 
         if(self.switchButton.cget("text") == "Simple"): # This has proved to work
@@ -66,7 +68,8 @@ class GUI:
         if(self.userInputBox.get() == "run"):
             self.RunTestCases(t)
         elif(self.userInputBox.get() == "test"):
-            self.DrawNaphthalene(t)
+            compoundData = [1,0,0,1,0,0,1,0]
+            self.a.DrawNaphthalene(t, compoundData)
         else:
             # Check for special type of ligand in compound
             userInput = self.formatUserInput(self.userInputBox.get())
@@ -86,32 +89,13 @@ class GUI:
                 else:
                     self.co.DrawHydroCarbonComplex(t, len(compoundData), compoundData, bondPositions)
 
-    # Testing
-    def DrawNaphthalene(self, t : turtle.RawTurtle, compoundData : list):
-        t.setheading(30)
-        for i in range(0, 5):
-            if(i % 2 == 0):
-                self.DrawBonds(t, 2, t.heading())
-            else:
-                self.DrawBonds(t, 1, t.heading())
-            t.right(60)
-        t.setheading(210)
-        for i in range(5, 11):
-            if(i % 2 == 0):
-                self.DrawBonds(t, 1, t.heading())
-            else:
-                self.DrawBonds(t, 2, t.heading())
-            t.right(60)
-
-    # Testing
-
     def RunTestCases(self, t : turtle.RawTurtle) -> None:
         with open("testCases.txt", "r") as data:
             lines = [line.strip() for line in data]
 
         lines = list(filter(lambda a: a[0] != "#", lines)) # Removes titles (index for cyclical is 18)
 
-        lines = lines[40:]
+        lines = lines[10:]
 
         for compound in lines: 
             t.reset()

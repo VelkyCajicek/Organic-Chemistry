@@ -1,0 +1,59 @@
+# Alkany
+2,3,7-trimethyl-nonan
+4-ethyl-heptan
+2,3-dimethyl-5-propyl-oktan
+3-methyl-hexan
+3-ethyl-3-methyl-hexan
+5-butyl-7-ethyl-2-methyl-nonan
+# Alkeny
+2,3,3,7-tetramethyl-okt-1-en 
+4-propyl-deka-2,4-dien
+3,4-diethyl-4-methyl-5,5-dipropyl-nona-1,6-dien
+3-methyl-hex-2-en 
+3-ethyl-2,3,4-trimethyl-hexa-1,4-dien
+5-butyl-8-ethyl-2-methyl-deka-1,3,6,9-tetraen
+# Alkyny
+2,3,7-trimethyl-okt-4-yn
+4,5-dipropyl-nona-2,6-diyn
+3,3,4-triethyl-4-methyl-5,5-dipropyl-deka-6,7-dien-1-yn
+3-methyl-hepta-1,4-diyn
+5-ethyl-3,4,4-trimethyl-okt-1-en-6-yn
+5-ethyl-2,8-dimethyl-non-3-yn
+# Cyklicke uhlovodiky
+cyklobuten
+1-ethyl-2-propyl-cyklopent-1-en
+4-ethyl-5-methyl-cyklohexa-1,3-dien
+3-methyl-cyklobut-1-yn
+cyklobutyn
+3-ethylcyklobut-1-yn
+cyklopropan
+4-ethyl-1-methyl-1-propyl-cyklohexan
+1,2,3,4-tetramethyl-cyklobutan
+1-ethyl-2,2-dimethyl-cyklooktan
+1-propyl-cyklopropan 
+1,1-diethyl-cykloheptan
+cyklobutyn
+1-methyl-4-pentyl-cyklohex-1-en
+3-ethyl-1-methyl-2-hexyl-cyklopent-1-en
+1,2,5-trimethyl-cyklookt-3-yn
+1-methyl-2-propyl-cykloprop-1-en
+1,1-diethyl-cyklohept-3-yn
+# Areny
+1,4-diethyl-2-methyl-benzen
+1-ethyl-2-methylbenzen 
+1,2,3-tripropylbenzen
+1,2,4-trimethylbenzen
+p-dibutylbenzen
+1,4,7-trimethyl-naftalen
+7,10-diethyl-1,2,5-trimethyl-6-propyl-anthracen 
+# Halogenderiváty, nitrosoderiváty a nitroderiváty
+1-chlor-butan
+tetrabrom-methan
+3-brom-5-ethyl-2,2,4-trimethyl-hept-3-en
+2,4,6-trinitrotoluen
+1-brom-1-chlor-3-nitrosocyklohexan
+2,3-dibromnaftalen
+4-chlor-hepta-1,2-dien 
+brom-cyklobutan
+1,3,5-trinitrosonaftalen
+dinitro-methan  

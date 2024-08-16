@@ -13,17 +13,9 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.core.window import Window
 Window.size = (71.5*8, 146.7*3.5)
 # App functionality imports from different personal scripts
-from tivy import Tivy
+from drawing_scripts.tivy import Tivy
+from drawing_scripts.simple_hydrocarbon import SimpleHydrocarbon
 from formula import mainFormula
-
-class ChemistyLogic:
-    def DrawBonds(self, t : Tivy, numBonds : int) -> None:
-        if(numBonds == 2):
-            Color(255, 0, 0, 0.5)
-        if(numBonds == 3):
-            Color(255, 0, 0, 0.5)
-        t.foward(30)
-        Color()
 
 class MainRelativeLayout(StackLayout):
     def __init__(self, **kw):
@@ -37,30 +29,29 @@ class MainRelativeLayout(StackLayout):
         self.confirmButton.bind(on_press=self.on_enter)
         # App logic
         self.t = Tivy()
+        self.s = SimpleHydrocarbon()
         self.bondPositions = []
         self.compoundData = []
-        self.t.setpos(250, 250) # These two lines could be temporary
-        self.t.setheading(30)
 
-        with self.canvas:
-            info = self.DrawHydrocarbonSimple(len(self.compoundData))
-            Line(points=info, width=1)
+        #compoundData = [0, 0, 2, 2, [3, 3], 0, 0, 0, 0]
+        #bondPositions = [2, 1, 1, 1, 1, 2, 1, 1, 1]
+
+        #with self.canvas:
+        #    self.s.DrawHydrocarbonSimple(self.t, len(compoundData), compoundData, bondPositions)
         
     def on_enter(self, event): # event here means that it registers a click
-        self.compoundData, self.bondPositions = mainFormula(str(self.textInput.text).strip().lower().replace("cyklo", ""))
+        self.canvas.clear()
+        if(str(self.textInput.text) == "run"):
+            with open("testCases.txt", "r") as data:
+                lines = [line.strip() for line in data]
 
-    def DrawHydrocarbonSimple(self, mainCarbonCount : int) -> list:
-        formulaInfo = []
-        for i in range(0, mainCarbonCount - 1):
-            if(self.t.heading() == 30.0):
-                formulaInfo.extend(self.t.currentPosition)
-                self.t.setheading(330)
-            else:
-                formulaInfo.extend(self.t.currentPosition)
-                self.t.setheading(30)
-            self.t.foward(30)
-        return formulaInfo
-        
+            lines = list(filter(lambda a: a[0] != "#", lines)) # Removes titles (index for cyclical is 18)
+
+        else:
+            compoundData, bondPositions = mainFormula(str(self.textInput.text).strip().lower().replace("cyklo", ""))
+            with self.canvas:
+                self.s.DrawHydrocarbonSimple(self.t, len(compoundData), compoundData, bondPositions)
+
 class KivyCanvas(App):
     def build(self):
         return MainRelativeLayout()
